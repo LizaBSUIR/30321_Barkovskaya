@@ -1,0 +1,49 @@
+﻿@implements IDisposable
+@rendermode InteractiveServer
+
+<h3>Ресторан</h3>
+
+<table class="table table-striped">
+	<thead>
+		<th>Название</th>
+		<th></th>
+		@if (
+			ApiDishService.Dishes != null &&
+			ApiDishService.Dishes.Count() != 0
+		) {
+			foreach (var dish in ApiDishService.dishes)
+			{
+				<tr>
+				<td>@dish.Name</td>
+					<td>
+					<button class="btn btn-outline-dark" @onclick="@(() => 
+						OnDishSelected(dish.Id)
+					)">Подробно</button>
+					</td>
+				</tr>
+			}
+		}
+	</thead>
+</table>
+
+
+@code {
+	[CascadingParameter]
+	public IDishService<Dish> ApiDishService { get; set; }
+
+	[Parameter]
+	public EventCallback<int> DishSelected { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		ApiDishService.ListChanged += StateHasChanged;
+	}
+	public async void OnDishSelected(int id)
+	{
+		await DishSelected.InvokeAsync(id);
+	}
+	public void Dispose()
+	{
+		ApiDishService.ListChanged -= StateHasChanged;
+	}
+}

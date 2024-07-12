@@ -9,5 +9,7 @@ namespace _30321_Barkovskaya.UI.Data
             : base(options)
         {
         }
+        public DbSet<_30321_BarkovskayaDomain.Entities.Dish> Dish { get; set; } = default!;
+
     }
 }
